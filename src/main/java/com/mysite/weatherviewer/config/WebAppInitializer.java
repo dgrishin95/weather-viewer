@@ -2,6 +2,7 @@ package com.mysite.weatherviewer.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+// **минимально необходимый класс для подключения Spring MVC без Spring Boot**
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
