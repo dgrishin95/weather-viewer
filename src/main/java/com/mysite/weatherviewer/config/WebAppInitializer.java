@@ -7,8 +7,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-//        return new Class[]{AppConfig.class}; // Hibernate, DataSource, сервисы
-        return null; // Hibernate, DataSource, сервисы
+        return new Class[]{AppConfig.class}; // Hibernate, DataSource, сервисы
     }
 
     @Override
