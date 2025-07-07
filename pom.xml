@@ -36,6 +36,13 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <!-- Spring Context для интеграции с Liquibase -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <!-- Spring ORM -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -69,6 +76,13 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
+        </dependency>
+
+        <!-- Liquibase Core -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.29.2</version>
         </dependency>
 
         <!-- Test Dependencies -->
