@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Sign in</title>
+    <title>Sign up</title>
 </head>
 <body>
-<form th:action="@{/auth/login}" th:object="${user}" method="post">
+<form th:action="@{/auth/register}" th:object="${new_user}" method="post">
     <div>
         <label for="login">Login:</label>
         <input type="text" id="login" name="login" required/>
@@ -15,10 +15,10 @@
         <input type="password" id="password" name="password" required/>
     </div>
     <div>
-        <button type="submit">Sign in</button>
+        <button type="submit">Sign up</button>
     </div>
     <div>
-        Don't have an account? <a href="/auth/register">Sign up</a>
+        Already have an account? <a href="/auth/login">Sign in</a>
     </div>
 </form>
 </body>
