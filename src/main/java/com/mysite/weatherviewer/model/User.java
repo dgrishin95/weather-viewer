@@ -30,10 +30,10 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "login")
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

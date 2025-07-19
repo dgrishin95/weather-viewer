@@ -28,9 +28,9 @@ public class Session {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(name = "expires_at")
+    @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
 }

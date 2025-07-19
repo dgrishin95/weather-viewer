@@ -27,6 +27,17 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
+
+        // UserService
+//        Проверяет, есть ли такой пользователь
+//        Шифрует пароль
+//        Сохраняет User
+
+        // SessionService
+//        Генерирует UUID
+//        Вычисляет expiresAt
+//        Создаёт и сохраняет Session
+
         model.addAttribute("new_user", new RegisterDto());
         return "auth/register";
     }

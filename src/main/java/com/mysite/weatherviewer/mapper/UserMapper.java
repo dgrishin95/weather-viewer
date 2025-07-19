@@ -1,0 +1,12 @@
+package com.mysite.weatherviewer.mapper;
+
+import com.mysite.weatherviewer.dto.RegisterDto;
+import com.mysite.weatherviewer.mapper.config.DefaultMapperConfig;
+import com.mysite.weatherviewer.model.User;
+import org.mapstruct.Mapper;
+
+@Mapper(config = DefaultMapperConfig.class)
+public interface UserMapper {
+    User toEntity(RegisterDto registerDto);
+    RegisterDto toRegisterDto(User user);
+}
