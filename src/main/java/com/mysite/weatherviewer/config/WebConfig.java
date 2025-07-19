@@ -12,7 +12,7 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.mysite.weatherviewer.controller")
+@ComponentScan(basePackages = "com.mysite.weatherviewer")
 public class WebConfig implements WebMvcConfigurer {
 
     @Bean

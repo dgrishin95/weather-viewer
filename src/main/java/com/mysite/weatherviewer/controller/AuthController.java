@@ -2,6 +2,8 @@ package com.mysite.weatherviewer.controller;
 
 import com.mysite.weatherviewer.dto.LoginDto;
 import com.mysite.weatherviewer.dto.RegisterDto;
+import com.mysite.weatherviewer.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
+
+    private final UserService userService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -27,23 +32,21 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
-
-        // UserService
-//        Проверяет, есть ли такой пользователь
-//        Шифрует пароль
-//        Сохраняет User
-
-        // SessionService
-//        Генерирует UUID
-//        Вычисляет expiresAt
-//        Создаёт и сохраняет Session
-
         model.addAttribute("new_user", new RegisterDto());
         return "auth/register";
     }
 
     @PostMapping("/register")
     public String register(@ModelAttribute RegisterDto user, Model model) {
+//        UserDto newUser = userService.register(user);
+
+
+//        Cookie sessionCookie = new Cookie("SESSION_ID", sessionId.toString());
+//        sessionCookie.setPath("/");
+//        sessionCookie.setHttpOnly(true);
+//        sessionCookie.setMaxAge(...); // срок действия, в секундах
+//        response.addCookie(sessionCookie);
+
         model.addAttribute("user", user);
         return "auth/welcome";
     }
