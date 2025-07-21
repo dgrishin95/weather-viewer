@@ -2,6 +2,7 @@ package com.mysite.weatherviewer.service;
 
 import com.mysite.weatherviewer.dto.RegisterDto;
 import com.mysite.weatherviewer.dto.UserDto;
+import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
 import com.mysite.weatherviewer.mapper.UserMapper;
 import com.mysite.weatherviewer.model.User;
 import com.mysite.weatherviewer.repository.UserRepository;
@@ -20,23 +21,19 @@ public class UserService {
 
     @Transactional
     public UserDto register(RegisterDto registerDto) {
-        UserDto newUserDto = new UserDto();
-
-        if (!userRepository.existsByLogin(registerDto.getLogin())) {
-            String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
-
-            User newUser = User.builder()
-                    .login(registerDto.getLogin())
-                    .password(encodedPassword)
-                    .build();
-
-            User savedUser = userRepository.save(newUser);
-            newUserDto = userMapper.toUserDto(savedUser);
-        }
-        else {
-            // TODO: catch Exception
+        if (userRepository.existsByLogin(registerDto.getLogin())) {
+            throw new UserAlreadyExistsException("User with login already exists");
         }
 
-        return newUserDto;
+        String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
+
+        User newUser = User.builder()
+                .login(registerDto.getLogin())
+                .password(encodedPassword)
+                .build();
+
+        User savedUser = userRepository.save(newUser);
+
+        return userMapper.toUserDto(savedUser);
     }
 }

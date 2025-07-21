@@ -20,6 +20,10 @@
     <div>
         Already have an account? <a href="/auth/login">Sign in</a>
     </div>
+
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
 </form>
 </body>
 </html>

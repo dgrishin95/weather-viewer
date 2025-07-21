@@ -4,6 +4,7 @@ import com.mysite.weatherviewer.dto.LoginDto;
 import com.mysite.weatherviewer.dto.RegisterDto;
 import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.dto.UserDto;
+import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
 import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -37,25 +39,31 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String register(Model model) {
-        model.addAttribute("new_user", new RegisterDto());
+    public String showRegisterForm(Model model) {
+//        if (!model.containsAttribute("new_user")) {
+//            model.addAttribute("new_user", new RegisterDto());
+//        }
+
         return "auth/register";
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterDto user, Model model, HttpServletResponse response) {
-        UserDto newUser = userService.register(user);
-        SessionDto newUserSession = sessionService.create(newUser);
+    public String handleRegister(@ModelAttribute RegisterDto user, Model model,
+                           RedirectAttributes redirectAttributes, HttpServletResponse response) {
+        try {
+            UserDto newUser = userService.register(user);
+            SessionDto newUserSession = sessionService.create(newUser);
 
-        Cookie sessionCookie = new Cookie("session_id", newUserSession.getId().toString());
-        sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
+            Cookie sessionCookie = new Cookie("session_id", newUserSession.getId().toString());
+            sessionCookie.setPath("/");
+            sessionCookie.setHttpOnly(true);
+            response.addCookie(sessionCookie);
 
-        response.addCookie(sessionCookie);
-
-//        sessionCookie.setMaxAge(...); // срок действия, в секундах
-
-        model.addAttribute("user", user);
-        return "auth/welcome";
+            model.addAttribute("user", user);
+            return "auth/welcome";
+        } catch (UserAlreadyExistsException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+            return "redirect:/auth/register";
+        }
     }
 }
