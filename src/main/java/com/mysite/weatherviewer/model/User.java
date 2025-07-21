@@ -25,6 +25,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
 
+    public User(Long id, String login) {
+        this.id = id;
+        this.login = login;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -2,7 +2,12 @@ package com.mysite.weatherviewer.controller;
 
 import com.mysite.weatherviewer.dto.LoginDto;
 import com.mysite.weatherviewer.dto.RegisterDto;
+import com.mysite.weatherviewer.dto.SessionDto;
+import com.mysite.weatherviewer.dto.UserDto;
+import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
 
     private final UserService userService;
+    private final SessionService sessionService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -37,15 +43,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterDto user, Model model) {
-//        UserDto newUser = userService.register(user);
+    public String register(@ModelAttribute RegisterDto user, Model model, HttpServletResponse response) {
+        UserDto newUser = userService.register(user);
+        SessionDto newUserSession = sessionService.create(newUser);
 
+        Cookie sessionCookie = new Cookie("session_id", newUserSession.getId().toString());
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
 
-//        Cookie sessionCookie = new Cookie("SESSION_ID", sessionId.toString());
-//        sessionCookie.setPath("/");
-//        sessionCookie.setHttpOnly(true);
+        response.addCookie(sessionCookie);
+
 //        sessionCookie.setMaxAge(...); // срок действия, в секундах
-//        response.addCookie(sessionCookie);
 
         model.addAttribute("user", user);
         return "auth/welcome";

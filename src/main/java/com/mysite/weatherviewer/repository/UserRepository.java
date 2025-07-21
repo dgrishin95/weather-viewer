@@ -1,16 +1,16 @@
 package com.mysite.weatherviewer.repository;
 
 import com.mysite.weatherviewer.model.User;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
+import com.mysite.weatherviewer.repository.base.BaseRepository;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
-public class UserRepository {
+public class UserRepository extends BaseRepository {
 
-    private final SessionFactory sessionFactory;
+    public UserRepository(SessionFactory sessionFactory) {
+        super(sessionFactory);
+    }
 
     public User findByLogin(String login) {
         return getCurrentSession()
@@ -32,9 +32,5 @@ public class UserRepository {
     public User save(User user) {
         getCurrentSession().persist(user);
         return user;
-    }
-
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
     }
 }

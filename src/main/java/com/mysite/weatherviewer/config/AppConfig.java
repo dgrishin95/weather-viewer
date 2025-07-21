@@ -85,7 +85,7 @@ public class AppConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.mysite.weatherviewer.entity");
+        sessionFactory.setPackagesToScan("com.mysite.weatherviewer.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;

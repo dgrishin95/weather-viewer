@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 @Mapper(config = DefaultMapperConfig.class)
 public interface UserMapper {
     User toEntity(RegisterDto registerDto);
-    RegisterDto toRegisterDto(User user);
 
     User toEntity(UserDto userDto);
     UserDto toUserDto(User user);
