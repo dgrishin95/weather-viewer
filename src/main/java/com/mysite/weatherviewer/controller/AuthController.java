@@ -10,6 +10,7 @@ import com.mysite.weatherviewer.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,15 @@ public class AuthController {
     private final UserService userService;
     private final SessionService sessionService;
 
+    @Value("${app.session.cookie.name}")
+    private String cookieName;
+
+    @Value("${app.session.cookie.path}")
+    private String cookiePath;
+
+    @Value("${app.session.cookie.http-only}")
+    private boolean cookieHttpOnly;
+
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("user", new LoginDto());
@@ -40,10 +50,6 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-//        if (!model.containsAttribute("new_user")) {
-//            model.addAttribute("new_user", new RegisterDto());
-//        }
-
         return "auth/register";
     }
 
@@ -52,12 +58,9 @@ public class AuthController {
                            RedirectAttributes redirectAttributes, HttpServletResponse response) {
         try {
             UserDto newUser = userService.register(user);
-            SessionDto newUserSession = sessionService.create(newUser);
 
-            Cookie sessionCookie = new Cookie("session_id", newUserSession.getId().toString());
-            sessionCookie.setPath("/");
-            sessionCookie.setHttpOnly(true);
-            response.addCookie(sessionCookie);
+            SessionDto newUserSession = sessionService.create(newUser);
+            setSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
             return "auth/welcome";
@@ -65,5 +68,13 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/register";
         }
+    }
+
+    private void setSessionCookie(HttpServletResponse response, SessionDto newUserSession) {
+        Cookie sessionCookie = new Cookie(cookieName, newUserSession.getId().toString());
+        sessionCookie.setPath(cookiePath);
+        sessionCookie.setHttpOnly(cookieHttpOnly);
+
+        response.addCookie(sessionCookie);
     }
 }
