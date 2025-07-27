@@ -7,17 +7,16 @@ import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.exception.InvalidCredentialsException;
 import com.mysite.weatherviewer.exception.InvalidUserDataException;
 import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
+import com.mysite.weatherviewer.service.CookieService;
 import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,18 +34,7 @@ public class AuthController {
 
     private final UserService userService;
     private final SessionService sessionService;
-
-    @Value("${app.session.cookie.name}")
-    private String cookieName;
-
-    @Value("${app.session.cookie.path}")
-    private String cookiePath;
-
-    @Value("${app.session.cookie.http-only}")
-    private boolean cookieHttpOnly;
-
-    @Value("${app.session.cookie.expire-now}")
-    private int expireNow;
+    private final CookieService cookieService;
 
     @GetMapping("/welcome")
     public String welcome() {
@@ -66,9 +54,8 @@ public class AuthController {
                               HttpServletResponse response) {
         try {
             UserDto foundUser = userService.login(user);
-
             SessionDto newUserSession = sessionService.create(foundUser);
-            setSessionCookie(response, newUserSession);
+            cookieService.addSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
             return "redirect:/auth/welcome";
@@ -100,7 +87,7 @@ public class AuthController {
             UserDto newUser = userService.register(user);
 
             SessionDto newUserSession = sessionService.create(newUser);
-            setSessionCookie(response, newUserSession);
+            cookieService.addSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
             return "redirect:/auth/welcome";
@@ -112,28 +99,13 @@ public class AuthController {
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Cookie> foundCookie = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals(cookieName))
-                .findFirst();
+        Optional<Cookie> foundCookie = cookieService.findSessionCookie(request);
 
-        foundCookie.ifPresent(cookie -> removeSessionCookie(cookie, response));
+        foundCookie.ifPresent(cookie -> {
+            sessionService.remove(cookie.getValue());
+            cookieService.removeSessionCookie(cookie, response);
+        });
 
         return "redirect:/auth/login";
-    }
-
-    private void setSessionCookie(HttpServletResponse response, SessionDto newUserSession) {
-        Cookie newCookie = new Cookie(cookieName, newUserSession.getId().toString());
-        newCookie.setPath(cookiePath);
-        newCookie.setHttpOnly(cookieHttpOnly);
-
-        response.addCookie(newCookie);
-    }
-
-    private void removeSessionCookie(Cookie foundCookie, HttpServletResponse response) {
-        sessionService.remove(foundCookie.getValue());
-        foundCookie.setPath(cookiePath);
-        foundCookie.setMaxAge(expireNow);
-
-        response.addCookie(foundCookie);
     }
 }
