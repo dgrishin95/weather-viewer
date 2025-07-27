@@ -34,4 +34,9 @@ public class SessionService {
 
         return sessionMapper.toSessionDto(session);
     }
+
+    @Transactional
+    public void remove(String foundUuid) {
+        sessionRepository.remove(UUID.fromString(foundUuid));
+    }
 }
