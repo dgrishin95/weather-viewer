@@ -4,15 +4,20 @@ import com.mysite.weatherviewer.dto.LoginDto;
 import com.mysite.weatherviewer.dto.RegisterDto;
 import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.dto.UserDto;
+import com.mysite.weatherviewer.exception.InvalidUserDataException;
 import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
 import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,9 +59,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@ModelAttribute RegisterDto user, Model model,
-                           RedirectAttributes redirectAttributes, HttpServletResponse response) {
+    public String handleRegister(@Valid @ModelAttribute RegisterDto user,
+                                 BindingResult bindingResult,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes, HttpServletResponse response) {
         try {
+            if (bindingResult.hasErrors()) {
+                String errors = bindingResult.getAllErrors().stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.joining(", "));
+                throw new InvalidUserDataException("Validation failed: " + errors);
+            }
+
             UserDto newUser = userService.register(user);
 
             SessionDto newUserSession = sessionService.create(newUser);
@@ -64,7 +78,7 @@ public class AuthController {
 
             model.addAttribute("user", user);
             return "auth/welcome";
-        } catch (UserAlreadyExistsException exception) {
+        } catch (UserAlreadyExistsException | InvalidUserDataException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/register";
         }
