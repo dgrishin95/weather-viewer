@@ -1,8 +1,10 @@
 package com.mysite.weatherviewer.service;
 
+import com.mysite.weatherviewer.dto.LoginDto;
 import com.mysite.weatherviewer.dto.RegisterDto;
 import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
+import com.mysite.weatherviewer.exception.InvalidCredentialsException;
 import com.mysite.weatherviewer.mapper.UserMapper;
 import com.mysite.weatherviewer.model.User;
 import com.mysite.weatherviewer.repository.UserRepository;
@@ -35,5 +37,17 @@ public class UserService {
         User savedUser = userRepository.save(newUser);
 
         return userMapper.toUserDto(savedUser);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDto login(LoginDto loginDto) {
+        User foundUser = userRepository.findByLogin(loginDto.getLogin());
+
+        if (foundUser == null ||
+                !passwordEncoder.matches(loginDto.getPassword(), foundUser.getPassword())) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+
+        return userMapper.toUserDto(foundUser);
     }
 }

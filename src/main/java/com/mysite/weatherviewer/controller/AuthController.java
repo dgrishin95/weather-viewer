@@ -6,6 +6,7 @@ import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.exception.InvalidUserDataException;
 import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
+import com.mysite.weatherviewer.exception.InvalidCredentialsException;
 import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -48,9 +49,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginDto user, Model model) {
-        model.addAttribute("user", user);
-        return "auth/welcome";
+    public String handleLogin(@ModelAttribute LoginDto user,
+                              Model model,
+                              RedirectAttributes redirectAttributes,
+                              HttpServletResponse response) {
+        try {
+            UserDto foundUser = userService.login(user);
+
+            SessionDto newUserSession = sessionService.create(foundUser);
+            setSessionCookie(response, newUserSession);
+
+            model.addAttribute("user", user);
+            return "auth/welcome";
+        }
+        catch (InvalidCredentialsException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+            return "redirect:/auth/login";
+        }
     }
 
     @GetMapping("/register")
@@ -62,7 +77,8 @@ public class AuthController {
     public String handleRegister(@Valid @ModelAttribute RegisterDto user,
                                  BindingResult bindingResult,
                                  Model model,
-                                 RedirectAttributes redirectAttributes, HttpServletResponse response) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpServletResponse response) {
         try {
             if (bindingResult.hasErrors()) {
                 String errors = bindingResult.getAllErrors().stream()
