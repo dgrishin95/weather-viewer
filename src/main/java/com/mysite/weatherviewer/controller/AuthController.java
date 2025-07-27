@@ -48,6 +48,11 @@ public class AuthController {
     @Value("${app.session.cookie.expire-now}")
     private int expireNow;
 
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "auth/welcome";
+    }
+
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("user", new LoginDto());
@@ -66,7 +71,7 @@ public class AuthController {
             setSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
-            return "auth/welcome";
+            return "redirect:/auth/welcome";
         } catch (InvalidCredentialsException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/login";
@@ -98,7 +103,7 @@ public class AuthController {
             setSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
-            return "auth/welcome";
+            return "redirect:/auth/welcome";
         } catch (UserAlreadyExistsException | InvalidUserDataException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/register";
