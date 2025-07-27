@@ -3,16 +3,15 @@ package com.mysite.weatherviewer.interceptor;
 import com.mysite.weatherviewer.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@NoArgsConstructor
-public class SessionInterceptor implements HandlerInterceptor {
-    private SessionService sessionService;
+@Service
+@RequiredArgsConstructor
+public class AuthInterceptor implements HandlerInterceptor {
 
-    public SessionInterceptor(SessionService sessionService) {
-        this.sessionService = sessionService;
-    }
+    private final SessionService sessionService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
