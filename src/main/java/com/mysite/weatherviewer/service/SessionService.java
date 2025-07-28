@@ -3,7 +3,6 @@ package com.mysite.weatherviewer.service;
 import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.mapper.SessionMapper;
-import com.mysite.weatherviewer.mapper.UserMapper;
 import com.mysite.weatherviewer.model.Session;
 import com.mysite.weatherviewer.model.User;
 import com.mysite.weatherviewer.repository.SessionRepository;
@@ -20,7 +19,6 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final SessionMapper sessionMapper;
-    private final UserMapper userMapper;
 
     @Transactional
     public SessionDto create(UserDto newUser) {
@@ -38,5 +36,15 @@ public class SessionService {
     @Transactional
     public void remove(String foundUuid) {
         sessionRepository.remove(UUID.fromString(foundUuid));
+    }
+
+    @Transactional(readOnly = true)
+    public SessionDto findByUuid(String uuid) {
+        Session foundSession = sessionRepository.findByUuid(UUID.fromString(uuid));
+        return sessionMapper.toSessionDto(foundSession);
+    }
+
+    public boolean isSessionActive(SessionDto sessionDto) {
+        return sessionDto.getExpiresAt().isAfter(Instant.now());
     }
 }
