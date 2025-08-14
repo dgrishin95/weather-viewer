@@ -7,6 +7,13 @@
 <body>
 <h1>Welcome Page</h1>
 
+<form th:action="@{/weather/get}" method="post">
+    <input type="text" name="city" placeholder="Enter search term" required>
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
 <form th:action="@{/auth/logout}" method="post">
     <div>
         <button type="submit">Logout</button>
