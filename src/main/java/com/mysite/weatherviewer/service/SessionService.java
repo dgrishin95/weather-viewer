@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +21,15 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final SessionMapper sessionMapper;
 
+    @Value("${app.session.duration.minutes}")
+    private int durationMinutes;
+
     @Transactional
     public SessionDto create(UserDto newUser) {
         Session session = Session.builder()
                 .id(UUID.randomUUID())
                 .user(new User(newUser.getId(), newUser.getLogin()))
-                .expiresAt(Instant.now().plus(Duration.ofMinutes(1)))
+                .expiresAt(Instant.now().plus(Duration.ofMinutes(durationMinutes)))
                 .build();
 
         sessionRepository.save(session);

@@ -1,11 +1,9 @@
 package com.mysite.weatherviewer.dto.weather;
 
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class OpenWeatherResponse {
     private Coord coord;
 

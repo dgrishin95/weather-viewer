@@ -1,0 +1,30 @@
+package com.mysite.weatherviewer.service;
+
+import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+@RequiredArgsConstructor
+public class OpenWeatherClient {
+
+    private final RestTemplate restTemplate;
+
+    @Value("${weather.api.url}")
+    private String apiUrl;
+
+    @Value("${weather.api.units}")
+    private String apiUnits;
+
+    @Value("${weather.api.appid}")
+    private String apiAppId;
+
+    public OpenWeatherResponse getResponse(String cityName) {
+        String url = String.format("%s?q=%s&appid=%s&units=%s", apiUrl, cityName, apiAppId, apiUnits);
+        OpenWeatherResponse response = restTemplate.getForObject(url, OpenWeatherResponse.class);
+
+        return response;
+    }
+}
