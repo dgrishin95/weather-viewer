@@ -9,7 +9,7 @@ public class WeatherService {
 
     private final OpenWeatherClient openWeatherClient;
 
-    public void test(String cityName) {
+    public void searchByCityName(String cityName) {
         openWeatherClient.getResponse(cityName);
     }
 }

@@ -14,9 +14,9 @@ public class WeatherController {
 
     private final WeatherService weatherService;
 
-    @PostMapping("/get")
-    public String test(@RequestParam("cityName") String cityName) {
-        weatherService.test(cityName);
+    @PostMapping("/searchByCityName")
+    public String searchByCityName(@RequestParam("cityName") String cityName) {
+        weatherService.searchByCityName(cityName);
 
         return "redirect:/auth/welcome";
     }
