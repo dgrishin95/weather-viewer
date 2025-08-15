@@ -1,6 +1,12 @@
 package com.mysite.weatherviewer.controller;
 
+import com.mysite.weatherviewer.dto.SessionDto;
+import com.mysite.weatherviewer.service.CookieService;
+import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.WeatherService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +19,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class WeatherController {
 
     private final WeatherService weatherService;
+    private final CookieService cookieService;
+    private final SessionService sessionService;
 
     @PostMapping("/searchByCityName")
-    public String searchByCityName(@RequestParam("cityName") String cityName) {
-        weatherService.searchByCityName(cityName);
+    public String searchByCityName(HttpServletRequest request,
+                                   @RequestParam("cityName") String cityName) {
+        Optional<Cookie> foundCookie = cookieService.findSessionCookie(request);
 
-        return "redirect:/auth/welcome";
+        foundCookie.ifPresent(cookie -> {
+            SessionDto foundSession = sessionService.findByUuid(cookie.getValue());
+            weatherService.searchByCityName(cityName, foundSession.getUserId());
+        });
+
+        return "redirect:/auth/login";
     }
 }

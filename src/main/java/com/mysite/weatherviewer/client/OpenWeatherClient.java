@@ -1,4 +1,4 @@
-package com.mysite.weatherviewer.service;
+package com.mysite.weatherviewer.client;
 
 import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
 import lombok.RequiredArgsConstructor;
