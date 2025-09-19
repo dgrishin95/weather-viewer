@@ -32,6 +32,6 @@ public class WeatherController {
             weatherService.searchByCityName(cityName, foundSession.getUserId());
         });
 
-        return "redirect:/auth/login";
+        return "redirect:/auth/welcome";
     }
 }

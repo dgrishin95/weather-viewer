@@ -1,6 +1,7 @@
 package com.mysite.weatherviewer.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,5 @@ public class WeatherDataDto {
     private String iconId;
     private BigDecimal windSpeed;
     private Integer humidity;
+    private Instant updatedAt;
 }

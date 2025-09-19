@@ -25,6 +25,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     public User(Long id, String login) {
         this.id = id;
         this.login = login;

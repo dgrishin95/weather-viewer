@@ -24,6 +24,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Location {
 
+    public Location(Long id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -23,8 +23,6 @@ public class OpenWeatherClient {
 
     public OpenWeatherResponse getResponse(String cityName) {
         String url = String.format("%s?q=%s&appid=%s&units=%s", apiUrl, cityName, apiAppId, apiUnits);
-        OpenWeatherResponse response = restTemplate.getForObject(url, OpenWeatherResponse.class);
-
-        return response;
+        return restTemplate.getForObject(url, OpenWeatherResponse.class);
     }
 }

@@ -31,6 +31,11 @@ public class LocationRepository extends BaseRepository {
                         Location.class)
                 .setParameter("name", name)
                 .setParameter("userId", userId)
-                .getSingleResult());
+                .uniqueResult());
+    }
+
+    public Location save(Location location) {
+        getCurrentSession().persist(location);
+        return location;
     }
 }
