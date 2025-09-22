@@ -20,7 +20,7 @@ public class WeatherDataRepository extends BaseRepository {
     }
 
     public WeatherData save(WeatherData newWeatherData) {
-        getCurrentSession().persist(newWeatherData);
+        getCurrentSession().merge(newWeatherData);
         return newWeatherData;
     }
 }

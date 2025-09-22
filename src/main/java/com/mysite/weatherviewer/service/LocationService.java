@@ -5,7 +5,6 @@ import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
 import com.mysite.weatherviewer.mapper.LocationMapper;
 import com.mysite.weatherviewer.model.Location;
 import com.mysite.weatherviewer.repository.LocationRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +17,14 @@ public class LocationService {
     private final LocationMapper locationMapper;
 
     @Transactional
-    public boolean isLocationExist(String name, Long userId) {
-        return locationRepository.isLocationExist(name, userId);
-    }
+    public LocationDto findByNameAndUserId(String name, Long userId) {
+        Location foundLocation = locationRepository.findByNameAndUserId(name, userId);
 
-    @Transactional
-    public Optional<Location> findByNameAndUserId(String name, Long userId) {
-        return locationRepository.findByNameAndUserId(name, userId);
+        if (foundLocation == null) {
+            return null;
+        }
+
+        return locationMapper.toLocationDto(foundLocation);
     }
 
     @Transactional

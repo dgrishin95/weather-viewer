@@ -21,8 +21,13 @@ public class OpenWeatherClient {
     @Value("${weather.api.appid}")
     private String apiAppId;
 
-    public OpenWeatherResponse getResponse(String cityName) {
+    public OpenWeatherResponse getResponseForSaving(String cityName) {
         String url = String.format("%s?q=%s&appid=%s&units=%s", apiUrl, cityName, apiAppId, apiUnits);
+        return restTemplate.getForObject(url, OpenWeatherResponse.class);
+    }
+
+    public OpenWeatherResponse getResponseForUpdating(String lon, String lat) {
+        String url = String.format("%s?lon=%s&lat=%s&appid=%s&units=%s", apiUrl, lon, lat, apiAppId, apiUnits);
         return restTemplate.getForObject(url, OpenWeatherResponse.class);
     }
 }

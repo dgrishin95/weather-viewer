@@ -2,7 +2,6 @@ package com.mysite.weatherviewer.repository;
 
 import com.mysite.weatherviewer.model.Location;
 import com.mysite.weatherviewer.repository.base.BaseRepository;
-import java.util.Optional;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -25,13 +24,13 @@ public class LocationRepository extends BaseRepository {
         return count > 0;
     }
 
-    public Optional<Location> findByNameAndUserId(String name, Long userId) {
-        return Optional.ofNullable(getCurrentSession()
+    public Location findByNameAndUserId(String name, Long userId) {
+        return getCurrentSession()
                 .createQuery("FROM Location s WHERE LOWER(s.name) = LOWER(:name) AND s.user.id = :userId",
                         Location.class)
                 .setParameter("name", name)
                 .setParameter("userId", userId)
-                .uniqueResult());
+                .uniqueResult();
     }
 
     public Location save(Location location) {

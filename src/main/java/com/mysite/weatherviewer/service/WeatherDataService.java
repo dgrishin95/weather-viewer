@@ -17,17 +17,27 @@ public class WeatherDataService {
     private final WeatherDataRepository weatherDataRepository;
     private final WeatherDataMapper weatherDataMapper;
 
-    public void processWeatherData(Long locationId) {
-        WeatherData wd = weatherDataRepository.findByLocationId(locationId);
+    public WeatherDataDto findByLocationId(Long locationId) {
+        WeatherData weatherData = weatherDataRepository.findByLocationId(locationId);
+        return weatherDataMapper.toWeatherDataDto(weatherData);
     }
 
     @Transactional
     public void saveWeatherData(OpenWeatherResponse response, Long locationId) {
-        WeatherDataDto weatherDataDto = weatherDataMapper.toWeatherDataDto(response, locationId);
+        WeatherDataDto newWeatherData = weatherDataMapper.toWeatherDataDto(response, locationId);
+        saveOrUpdate(newWeatherData);
+    }
 
-        WeatherData newWeatherData = weatherDataMapper.toWeatherData(weatherDataDto);
-        newWeatherData.setUpdatedAt(Instant.now());
+    @Transactional
+    public void updateWeatherData(OpenWeatherResponse response, WeatherDataDto foundWeatherData) {
+        foundWeatherData = weatherDataMapper.toWeatherDataDto(response, foundWeatherData);
+        saveOrUpdate(foundWeatherData);
+    }
 
-        weatherDataRepository.save(newWeatherData);
+    private void saveOrUpdate(WeatherDataDto weatherDataDto) {
+        WeatherData weatherData = weatherDataMapper.toWeatherData(weatherDataDto);
+        weatherData.setUpdatedAt(Instant.now());
+
+        weatherDataRepository.save(weatherData);
     }
 }
