@@ -15,6 +15,12 @@ public class OpenWeatherClient {
     @Value("${weather.api.url}")
     private String apiUrl;
 
+    @Value("${weather.api.url.saving}")
+    private String urlForSaving;
+
+    @Value("${weather.api.url.updating}")
+    private String urlForUpdating;
+
     @Value("${weather.api.units}")
     private String apiUnits;
 
@@ -22,12 +28,12 @@ public class OpenWeatherClient {
     private String apiAppId;
 
     public OpenWeatherResponse getResponseForSaving(String cityName) {
-        String url = String.format("%s?q=%s&appid=%s&units=%s", apiUrl, cityName, apiAppId, apiUnits);
+        String url = String.format(urlForSaving, apiUrl, cityName, apiAppId, apiUnits);
         return restTemplate.getForObject(url, OpenWeatherResponse.class);
     }
 
     public OpenWeatherResponse getResponseForUpdating(String lon, String lat) {
-        String url = String.format("%s?lon=%s&lat=%s&appid=%s&units=%s", apiUrl, lon, lat, apiAppId, apiUnits);
+        String url = String.format(urlForUpdating, apiUrl, lon, lat, apiAppId, apiUnits);
         return restTemplate.getForObject(url, OpenWeatherResponse.class);
     }
 }
