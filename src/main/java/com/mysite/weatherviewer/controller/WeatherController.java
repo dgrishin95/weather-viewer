@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/weather")
@@ -24,13 +25,18 @@ public class WeatherController {
 
     @PostMapping("/searchByCityName")
     public String searchByCityName(HttpServletRequest request,
-                                   @RequestParam("cityName") String cityName) {
-        Optional<Cookie> foundCookie = cookieService.findSessionCookie(request);
+                                   @RequestParam("cityName") String cityName,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Cookie> foundCookie = cookieService.findSessionCookie(request);
 
-        foundCookie.ifPresent(cookie -> {
-            SessionDto foundSession = sessionService.findByUuid(cookie.getValue());
-            weatherService.searchByCityName(cityName, foundSession.getUserId());
-        });
+            foundCookie.ifPresent(cookie -> {
+                SessionDto foundSession = sessionService.findByUuid(cookie.getValue());
+                weatherService.searchByCityName(cityName, foundSession.getUserId());
+            });
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
 
         return "redirect:/auth/welcome";
     }

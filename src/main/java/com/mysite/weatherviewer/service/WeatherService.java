@@ -1,9 +1,14 @@
 package com.mysite.weatherviewer.service;
 
 import com.mysite.weatherviewer.client.OpenWeatherClient;
+import com.mysite.weatherviewer.client.OpenWeatherStatusCode;
 import com.mysite.weatherviewer.dto.LocationDto;
 import com.mysite.weatherviewer.dto.WeatherDataDto;
 import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
+import com.mysite.weatherviewer.exception.CityNotFoundException;
+import com.mysite.weatherviewer.exception.InvalidApiKeyException;
+import com.mysite.weatherviewer.exception.RequestLimitExceededException;
+import com.mysite.weatherviewer.exception.WeatherServiceIsNotRespondingException;
 import java.time.Duration;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +40,7 @@ public class WeatherService {
 
     private void saveData(String cityName, Long userId) {
         OpenWeatherResponse response = openWeatherClient.getResponseForSaving(cityName);
+        validateResponse(response);
 
         LocationDto savedLocation = locationService.saveLocation(response, userId);
         weatherDataService.saveWeatherData(response, savedLocation.getId());
@@ -50,8 +56,22 @@ public class WeatherService {
             String latitude = foundLocation.getLatitude().toString();
 
             OpenWeatherResponse response = openWeatherClient.getResponseForUpdating(longitude, latitude);
+            validateResponse(response);
 
             weatherDataService.updateWeatherData(response, foundWeatherData);
+        }
+    }
+
+    private void validateResponse(OpenWeatherResponse response) {
+        OpenWeatherStatusCode statusCode = OpenWeatherStatusCode.fromCode(response.getCod());
+
+        switch (statusCode) {
+            case OK -> {
+            }
+            case INVALID_API_KEY -> throw new InvalidApiKeyException("Invalid API key");
+            case CITY_NOT_FOUND -> throw new CityNotFoundException("City not found");
+            case LIMIT_EXCEEDED -> throw new RequestLimitExceededException("Request limit exceeded");
+            default -> throw new WeatherServiceIsNotRespondingException("The weather service is not responding");
         }
     }
 }

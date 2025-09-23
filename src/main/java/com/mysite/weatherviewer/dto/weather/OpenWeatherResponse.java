@@ -14,4 +14,8 @@ public class OpenWeatherResponse {
     private Wind wind;
 
     private String name;
+
+    private Integer cod;
+
+    private String message;
 }
