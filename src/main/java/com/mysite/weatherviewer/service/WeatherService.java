@@ -7,6 +7,7 @@ import com.mysite.weatherviewer.dto.WeatherDataDto;
 import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
 import com.mysite.weatherviewer.exception.CityNotFoundException;
 import com.mysite.weatherviewer.exception.InvalidApiKeyException;
+import com.mysite.weatherviewer.exception.InvalidCityNameException;
 import com.mysite.weatherviewer.exception.RequestLimitExceededException;
 import com.mysite.weatherviewer.exception.WeatherServiceIsNotRespondingException;
 import java.time.Duration;
@@ -27,8 +28,11 @@ public class WeatherService {
     @Value("${app.weather.cache.duration.minutes}")
     private long weatherCacheDurationMinutes;
 
+    public final static String CITY_NAME_PATTERN = "^[A-Za-z]+(?:[ -][A-Za-z]+)*$";
+
     @Transactional
     public void searchByCityName(String cityName, Long userId) {
+        validateCityName(cityName);
         LocationDto foundLocation = locationService.findByNameAndUserId(cityName, userId);
 
         if (foundLocation != null) {
@@ -72,6 +76,13 @@ public class WeatherService {
             case CITY_NOT_FOUND -> throw new CityNotFoundException("City not found");
             case LIMIT_EXCEEDED -> throw new RequestLimitExceededException("Request limit exceeded");
             default -> throw new WeatherServiceIsNotRespondingException("The weather service is not responding");
+        }
+    }
+
+    private void validateCityName(String cityName) {
+        if (!cityName.trim().matches(CITY_NAME_PATTERN)) {
+            throw new InvalidCityNameException("Please enter the city name using Latin letters only. " +
+                    "Example: 'New York' or 'Los-Angeles");
         }
     }
 }

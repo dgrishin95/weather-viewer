@@ -1,10 +1,12 @@
 package com.mysite.weatherviewer.client;
 
 import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,14 @@ public class OpenWeatherClient {
     private String apiAppId;
 
     public OpenWeatherResponse getResponseForSaving(String cityName) {
-        String url = String.format(urlForSaving, apiUrl, cityName, apiAppId, apiUnits);
+        URI url = UriComponentsBuilder
+                .fromHttpUrl(apiUrl)
+                .queryParam("q", cityName)
+                .queryParam("appid", apiAppId)
+                .queryParam("units", apiUnits)
+                .build()
+                .toUri();
+
         return restTemplate.getForObject(url, OpenWeatherResponse.class);
     }
 
