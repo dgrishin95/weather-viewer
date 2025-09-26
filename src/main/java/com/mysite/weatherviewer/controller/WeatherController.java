@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,11 @@ public class WeatherController {
     private final WeatherService weatherService;
     private final CookieService cookieService;
     private final SessionService sessionService;
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "weather/welcome";
+    }
 
     @PostMapping("/searchByCityName")
     public String searchByCityName(HttpServletRequest request,
@@ -38,6 +44,6 @@ public class WeatherController {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
         }
 
-        return "redirect:/auth/welcome";
+        return "redirect:/weather/welcome";
     }
 }

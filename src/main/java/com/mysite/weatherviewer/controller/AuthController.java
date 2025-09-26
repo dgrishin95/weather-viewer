@@ -36,11 +36,6 @@ public class AuthController {
     private final SessionService sessionService;
     private final CookieService cookieService;
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "auth/welcome";
-    }
-
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("user", new LoginDto());
@@ -58,7 +53,7 @@ public class AuthController {
             cookieService.addSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
-            return "redirect:/auth/welcome";
+            return "redirect:/weather/welcome";
         } catch (InvalidCredentialsException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/login";
@@ -90,7 +85,7 @@ public class AuthController {
             cookieService.addSessionCookie(response, newUserSession);
 
             model.addAttribute("user", user);
-            return "redirect:/auth/welcome";
+            return "redirect:/weather/welcome";
         } catch (UserAlreadyExistsException | InvalidUserDataException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/auth/register";
