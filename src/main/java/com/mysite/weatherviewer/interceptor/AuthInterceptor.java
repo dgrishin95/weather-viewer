@@ -1,5 +1,6 @@
 package com.mysite.weatherviewer.interceptor;
 
+import com.mysite.weatherviewer.common.RequestAttributeKeys;
 import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.service.CookieService;
 import com.mysite.weatherviewer.service.SessionService;
@@ -41,6 +42,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.sendRedirect("/auth/login");
             return false;
         }
+
+        request.setAttribute(RequestAttributeKeys.USER_COOKIE, foundCookie.get());
+        request.setAttribute(RequestAttributeKeys.USER_SESSION, foundSession);
 
         return true;
     }
