@@ -1,5 +1,6 @@
 package com.mysite.weatherviewer.mapper;
 
+import com.mysite.weatherviewer.dto.UserWeatherDto;
 import com.mysite.weatherviewer.dto.WeatherDataDto;
 import com.mysite.weatherviewer.dto.weather.OpenWeatherResponse;
 import com.mysite.weatherviewer.mapper.config.DefaultMapperConfig;
@@ -33,4 +34,11 @@ public interface WeatherDataMapper {
 
     @Mapping(source = "location.id", target = "locationId")
     WeatherDataDto toWeatherDataDto(WeatherData weatherData);
+
+    @Mapping(source = "weatherData.location.id", target = "location.id")
+    @Mapping(source = "weatherData.location.name", target = "location.name")
+    @Mapping(source = "weatherData.location.user.id", target = "location.userId")
+    @Mapping(source = "weatherData.location.latitude", target = "location.latitude")
+    @Mapping(source = "weatherData.location.longitude", target = "location.longitude")
+    UserWeatherDto toUserWeatherDto(WeatherData weatherData);
 }
