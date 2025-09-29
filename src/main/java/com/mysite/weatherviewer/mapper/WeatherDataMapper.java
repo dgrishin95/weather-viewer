@@ -8,7 +8,7 @@ import com.mysite.weatherviewer.model.WeatherData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config = DefaultMapperConfig.class)
+@Mapper(config = DefaultMapperConfig.class, uses = {LocationMapper.class})
 public interface WeatherDataMapper {
 
     @Mapping(source = "locationId", target = "locationId")
@@ -35,10 +35,7 @@ public interface WeatherDataMapper {
     @Mapping(source = "location.id", target = "locationId")
     WeatherDataDto toWeatherDataDto(WeatherData weatherData);
 
-    @Mapping(source = "weatherData.location.id", target = "location.id")
-    @Mapping(source = "weatherData.location.name", target = "location.name")
-    @Mapping(source = "weatherData.location.user.id", target = "location.userId")
-    @Mapping(source = "weatherData.location.latitude", target = "location.latitude")
-    @Mapping(source = "weatherData.location.longitude", target = "location.longitude")
+    @Mapping(source = "weatherData.location", target = "location")
+    @Mapping(source = "weatherData", target = "weatherData")
     UserWeatherDto toUserWeatherDto(WeatherData weatherData);
 }
