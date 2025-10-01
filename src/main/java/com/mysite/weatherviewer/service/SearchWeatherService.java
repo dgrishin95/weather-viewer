@@ -30,25 +30,25 @@ public class SearchWeatherService {
         LocationDto foundLocation = locationService.findByNameAndUserId(cityName, userId);
 
         if (foundLocation != null) {
-            updateData(foundLocation);
+            updateByLocation(foundLocation);
         } else {
-            saveData(cityName, userId);
+            createLocation(cityName, userId);
         }
     }
 
-    private void saveData(String cityName, Long userId) {
+    private void createLocation(String cityName, Long userId) {
         OpenWeatherResponse response = openWeatherClient.getResponseForSaving(cityName);
         validateResponse(response);
 
         LocationDto savedLocation = locationService.saveLocation(response, userId);
-        weatherDataService.saveWeatherData(response, savedLocation.getId());
+        weatherDataService.createWeatherData(response, savedLocation.getId());
     }
 
-    private void updateData(LocationDto foundLocation) {
-        updateData(foundLocation, null);
+    private void updateByLocation(LocationDto foundLocation) {
+        updateByLocationAndWeatherData(foundLocation, null);
     }
 
-    public WeatherDataDto updateData(LocationDto foundLocation, WeatherDataDto foundWeatherData) {
+    public WeatherDataDto updateByLocationAndWeatherData(LocationDto foundLocation, WeatherDataDto foundWeatherData) {
         if (foundWeatherData == null) {
             foundWeatherData = weatherDataService.findByLocationId(foundLocation.getId());
         }

@@ -24,17 +24,16 @@ public class UserWeatherService {
                 .map(userWeatherMapper::toUserWeatherDto)
                 .toList();
 
-        List<UserWeatherDto> list = userWeatherData
+        return userWeatherData
                 .stream()
-                .map(userWeatherDto -> getData(userWeatherDto))
+                .map(this::refreshWeatherIfNeeded)
                 .toList();
-
-        return null;
     }
 
-    private UserWeatherDto getData(UserWeatherDto userWeatherDto) {
+    private UserWeatherDto refreshWeatherIfNeeded(UserWeatherDto userWeatherDto) {
         WeatherDataDto updatedWeatherDataDto =
-                searchWeatherService.updateData(userWeatherDto.getLocation(), userWeatherDto.getWeatherData());
+                searchWeatherService.updateByLocationAndWeatherData(
+                        userWeatherDto.getLocation(), userWeatherDto.getWeatherData());
 
         userWeatherDto.setWeatherData(updatedWeatherDataDto);
 

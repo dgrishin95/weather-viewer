@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(config = DefaultMapperConfig.class)
 public interface SessionMapper {
-    Session toEntity(SessionDto sessionDto);
 
     @Mapping(target = "userId", expression = "java(session.getUser().getId())")
     SessionDto toSessionDto(Session session);

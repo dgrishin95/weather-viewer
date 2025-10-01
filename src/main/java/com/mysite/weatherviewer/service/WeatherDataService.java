@@ -28,7 +28,7 @@ public class WeatherDataService {
     }
 
     @Transactional
-    public void saveWeatherData(OpenWeatherResponse response, Long locationId) {
+    public void createWeatherData(OpenWeatherResponse response, Long locationId) {
         WeatherDataDto newWeatherData = weatherDataMapper.toWeatherDataDto(response, locationId);
         saveOrUpdate(newWeatherData);
     }
