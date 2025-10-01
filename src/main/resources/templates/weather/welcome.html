@@ -14,6 +14,10 @@
 
 <br>
 
+<div>
+    <p th:text="${userWeatherData.size()}"></p>
+</div>
+
 <div th:if="${errorMessage}" style="color: red;">
     <p th:text="${errorMessage}"></p>
 </div>

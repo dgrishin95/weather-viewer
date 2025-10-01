@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +25,11 @@ public class WeatherController {
     private final UserWeatherService userWeatherService;
 
     @GetMapping("/welcome")
-    public String welcome(HttpServletRequest request) {
+    public String welcome(HttpServletRequest request, Model model) {
         SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
         List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
 
-        request.setAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
+        model.addAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
 
         return "weather/welcome";
     }
