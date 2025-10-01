@@ -2,11 +2,9 @@ package com.mysite.weatherviewer.controller;
 
 import com.mysite.weatherviewer.common.RequestAttributeKeys;
 import com.mysite.weatherviewer.dto.SessionDto;
-import com.mysite.weatherviewer.dto.UserWeatherDto;
+import com.mysite.weatherviewer.service.SearchWeatherService;
 import com.mysite.weatherviewer.service.UserWeatherService;
-import com.mysite.weatherviewer.service.WeatherService;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,15 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class WeatherController {
 
-    private final WeatherService weatherService;
+    private final SearchWeatherService searchWeatherService;
     private final UserWeatherService userWeatherService;
 
     @GetMapping("/welcome")
     public String welcome(HttpServletRequest request) {
         SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
-        List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
+//        List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
 
-        request.setAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
+//        request.setAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
 
         return "weather/welcome";
     }
@@ -39,7 +37,7 @@ public class WeatherController {
                                    RedirectAttributes redirectAttributes) {
         try {
             SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
-            weatherService.searchByCityName(cityName, foundSession.getUserId());
+            searchWeatherService.searchByCityName(cityName, foundSession.getUserId());
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
         }

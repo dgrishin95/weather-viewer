@@ -10,23 +10,17 @@ import com.mysite.weatherviewer.exception.InvalidApiKeyException;
 import com.mysite.weatherviewer.exception.InvalidCityNameException;
 import com.mysite.weatherviewer.exception.RequestLimitExceededException;
 import com.mysite.weatherviewer.exception.WeatherServiceIsNotRespondingException;
-import java.time.Duration;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class WeatherService {
+public class SearchWeatherService {
 
     private final OpenWeatherClient openWeatherClient;
     private final LocationService locationService;
     private final WeatherDataService weatherDataService;
-
-    @Value("${app.weather.cache.duration.minutes}")
-    private long weatherCacheDurationMinutes;
 
     public final static String CITY_NAME_PATTERN = "^[A-Za-z]+(?:[ -][A-Za-z]+)*$";
 
@@ -50,12 +44,16 @@ public class WeatherService {
         weatherDataService.saveWeatherData(response, savedLocation.getId());
     }
 
-    public WeatherDataDto updateData(LocationDto foundLocation) {
-        WeatherDataDto foundWeatherData = weatherDataService.findByLocationId(foundLocation.getId());
-        Instant updatedAt = foundWeatherData.getUpdatedAt();
-        Instant now = Instant.now();
+    private void updateData(LocationDto foundLocation) {
+        updateData(foundLocation, null);
+    }
 
-        if (updatedAt.plus(Duration.ofMinutes(weatherCacheDurationMinutes)).isBefore(now)) {
+    public WeatherDataDto updateData(LocationDto foundLocation, WeatherDataDto foundWeatherData) {
+        if (foundWeatherData == null) {
+            foundWeatherData = weatherDataService.findByLocationId(foundLocation.getId());
+        }
+
+        if (weatherDataService.isWeatherDataNeededUpdate(foundWeatherData)) {
             String longitude = foundLocation.getLongitude().toString();
             String latitude = foundLocation.getLatitude().toString();
 

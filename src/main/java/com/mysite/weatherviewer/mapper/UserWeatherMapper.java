@@ -6,7 +6,7 @@ import com.mysite.weatherviewer.model.WeatherData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config = DefaultMapperConfig.class, uses = {LocationMapper.class})
+@Mapper(config = DefaultMapperConfig.class, uses = {LocationMapper.class, WeatherDataMapper.class})
 public interface UserWeatherMapper {
 
     @Mapping(source = "weatherData.location", target = "location")

@@ -15,7 +15,7 @@ public class UserWeatherService {
 
     private final UserWeatherRepository userWeatherRepository;
     private final UserWeatherMapper userWeatherMapper;
-    private final WeatherService weatherService;
+    private final SearchWeatherService searchWeatherService;
 
     @Transactional
     public List<UserWeatherDto> getUserWeatherData(Long userId) {
@@ -26,20 +26,15 @@ public class UserWeatherService {
 
         List<UserWeatherDto> list = userWeatherData
                 .stream()
-                .map(userWeatherDto ->
-                        isNeededUpdate(userWeatherDto) ? updateData(userWeatherDto) : userWeatherDto)
+                .map(userWeatherDto -> getData(userWeatherDto))
                 .toList();
 
         return null;
     }
 
-    private boolean isNeededUpdate(UserWeatherDto userWeatherDto) {
-        return true;
-    }
-
-    private UserWeatherDto updateData(UserWeatherDto userWeatherDto) {
+    private UserWeatherDto getData(UserWeatherDto userWeatherDto) {
         WeatherDataDto updatedWeatherDataDto =
-                weatherService.updateData(userWeatherDto.getLocation());
+                searchWeatherService.updateData(userWeatherDto.getLocation(), userWeatherDto.getWeatherData());
 
         userWeatherDto.setWeatherData(updatedWeatherDataDto);
 
