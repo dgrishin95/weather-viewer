@@ -4,6 +4,7 @@ import com.mysite.weatherviewer.dto.UserWeatherDto;
 import com.mysite.weatherviewer.dto.WeatherDataDto;
 import com.mysite.weatherviewer.mapper.UserWeatherMapper;
 import com.mysite.weatherviewer.repository.UserWeatherRepository;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ public class UserWeatherService {
         return userWeatherData
                 .stream()
                 .map(this::refreshWeatherIfNeeded)
+                .sorted(Comparator.comparing(
+                                (UserWeatherDto userWeatherDto) -> userWeatherDto.getLocation().getId())
+                        .reversed()
+                )
                 .toList();
     }
 

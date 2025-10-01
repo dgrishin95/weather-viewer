@@ -10,7 +10,6 @@ import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +26,11 @@ public class WeatherDataService {
         return weatherDataMapper.toWeatherDataDto(weatherData);
     }
 
-    @Transactional
     public void createWeatherData(OpenWeatherResponse response, Long locationId) {
         WeatherDataDto newWeatherData = weatherDataMapper.toWeatherDataDto(response, locationId);
         saveOrUpdate(newWeatherData);
     }
 
-    @Transactional
     public WeatherDataDto updateWeatherData(OpenWeatherResponse response, WeatherDataDto foundWeatherData) {
         foundWeatherData = weatherDataMapper.toWeatherDataDto(response, foundWeatherData);
         return saveOrUpdate(foundWeatherData);
