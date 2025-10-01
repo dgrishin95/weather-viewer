@@ -50,7 +50,7 @@ public class WeatherService {
         weatherDataService.saveWeatherData(response, savedLocation.getId());
     }
 
-    private void updateData(LocationDto foundLocation) {
+    public WeatherDataDto updateData(LocationDto foundLocation) {
         WeatherDataDto foundWeatherData = weatherDataService.findByLocationId(foundLocation.getId());
         Instant updatedAt = foundWeatherData.getUpdatedAt();
         Instant now = Instant.now();
@@ -62,8 +62,10 @@ public class WeatherService {
             OpenWeatherResponse response = openWeatherClient.getResponseForUpdating(longitude, latitude);
             validateResponse(response);
 
-            weatherDataService.updateWeatherData(response, foundWeatherData);
+            foundWeatherData = weatherDataService.updateWeatherData(response, foundWeatherData);
         }
+
+        return foundWeatherData;
     }
 
     private void validateResponse(OpenWeatherResponse response) {

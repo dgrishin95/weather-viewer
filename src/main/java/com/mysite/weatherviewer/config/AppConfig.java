@@ -56,6 +56,12 @@ public class AppConfig {
     @Value("${hibernate.temp.use-jdbc-metadata-defaults}")
     private String hibernateTempUseJdbcMetadataDefaults;
 
+    @Value("${hibernate.jdbc.batch-size}")
+    private String hibernateJdbcBatchSize;
+
+    @Value("${hibernate.order-updates}")
+    private String hibernateOrderUpdates;
+
     @Value("${liquibase.change-log}")
     private String liquibaseChangeLog;
 
@@ -111,6 +117,8 @@ public class AppConfig {
         properties.put("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
         properties.put("hibernate.jdbc.lob.non_contextual_creation", hibernateLobNonContextualCreation);
         properties.put("hibernate.temp.use_jdbc_metadata_defaults", hibernateTempUseJdbcMetadataDefaults);
+        properties.put("hibernate.jdbc.batch_size", hibernateJdbcBatchSize);
+        properties.put("hibernate.order_updates", hibernateOrderUpdates);
 
         return properties;
     }

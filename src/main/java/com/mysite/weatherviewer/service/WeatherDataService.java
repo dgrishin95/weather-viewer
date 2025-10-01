@@ -29,15 +29,17 @@ public class WeatherDataService {
     }
 
     @Transactional
-    public void updateWeatherData(OpenWeatherResponse response, WeatherDataDto foundWeatherData) {
+    public WeatherDataDto updateWeatherData(OpenWeatherResponse response, WeatherDataDto foundWeatherData) {
         foundWeatherData = weatherDataMapper.toWeatherDataDto(response, foundWeatherData);
-        saveOrUpdate(foundWeatherData);
+        return saveOrUpdate(foundWeatherData);
     }
 
-    private void saveOrUpdate(WeatherDataDto weatherDataDto) {
+    private WeatherDataDto saveOrUpdate(WeatherDataDto weatherDataDto) {
         WeatherData weatherData = weatherDataMapper.toWeatherData(weatherDataDto);
         weatherData.setUpdatedAt(Instant.now());
 
-        weatherDataRepository.save(weatherData);
+        WeatherData savedWeatherData = weatherDataRepository.save(weatherData);
+
+        return weatherDataMapper.toWeatherDataDto(savedWeatherData);
     }
 }

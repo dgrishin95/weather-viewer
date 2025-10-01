@@ -26,7 +26,7 @@ public class WeatherController {
     @GetMapping("/welcome")
     public String welcome(HttpServletRequest request) {
         SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
-        List<UserWeatherDto> userWeatherData = userWeatherService.findByUserId(foundSession.getUserId());
+        List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
 
         request.setAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
 
