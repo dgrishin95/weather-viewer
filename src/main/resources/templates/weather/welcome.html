@@ -3,6 +3,14 @@
 <head>
     <title>Welcome Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
 <h1>Welcome Page</h1>
@@ -14,13 +22,32 @@
 
 <br>
 
-<div>
-    <p th:text="${userWeatherData.size()}"></p>
-</div>
-
 <div th:if="${errorMessage}" style="color: red;">
     <p th:text="${errorMessage}"></p>
 </div>
+
+<br>
+
+<div>
+    <table>
+        <tr>
+            <th>NAME</th>
+            <th>TEMPERATURE</th>
+            <th>FEELS LIKE</th>
+            <th>ICON</th>
+        </tr>
+        <tr th:each="userWeather : ${userWeatherData}">
+            <td th:text="${userWeather.getLocation().getName()}">Test1</td>
+            <td th:text="${userWeather.getWeatherData().getTemperature()}">2.41</td>
+            <td th:text="${userWeather.getWeatherData().getFeelsLike()}">2.411</td>
+            <td>
+                <img th:src="'http://openweathermap.org/img/wn/' + ${userWeather.getWeatherData().getIconId()} + '.png'" alt="Example Image">
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br>
 
 <form th:action="@{/auth/logout}" method="post">
     <div>
