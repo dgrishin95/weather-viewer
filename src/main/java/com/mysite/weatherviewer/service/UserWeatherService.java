@@ -17,6 +17,8 @@ public class UserWeatherService {
     private final UserWeatherRepository userWeatherRepository;
     private final UserWeatherMapper userWeatherMapper;
     private final SearchWeatherService searchWeatherService;
+    private final LocationService locationService;
+    private final WeatherDataService weatherDataService;
 
     @Transactional
     public List<UserWeatherDto> getUserWeatherData(Long userId) {
@@ -43,5 +45,11 @@ public class UserWeatherService {
         userWeatherDto.setWeatherData(updatedWeatherDataDto);
 
         return userWeatherDto;
+    }
+
+    @Transactional
+    public void removeWeatherDataAndLocation(Long weatherDataId, Long locationId) {
+        weatherDataService.remove(weatherDataId);
+        locationService.remove(locationId);
     }
 }

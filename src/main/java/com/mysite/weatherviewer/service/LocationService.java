@@ -36,4 +36,9 @@ public class LocationService {
 
         return locationMapper.toLocationDto(savedLocation);
     }
+
+    @Transactional
+    public void remove(Long id) {
+        locationRepository.remove(id);
+    }
 }

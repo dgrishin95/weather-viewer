@@ -47,4 +47,12 @@ public class WeatherController {
 
         return "redirect:/weather/welcome";
     }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam("weatherDataId") Long weatherDataId,
+                         @RequestParam("locationId") Long locationId) {
+        userWeatherService.removeWeatherDataAndLocation(weatherDataId, locationId);
+
+        return "redirect:/weather/welcome";
+    }
 }

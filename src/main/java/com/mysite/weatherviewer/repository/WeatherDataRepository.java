@@ -2,6 +2,7 @@ package com.mysite.weatherviewer.repository;
 
 import com.mysite.weatherviewer.model.WeatherData;
 import com.mysite.weatherviewer.repository.base.BaseRepository;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +23,14 @@ public class WeatherDataRepository extends BaseRepository {
     public WeatherData save(WeatherData newWeatherData) {
         getCurrentSession().merge(newWeatherData);
         return newWeatherData;
+    }
+
+    public void remove(Long id) {
+        Session session = getCurrentSession();
+        WeatherData foundWeatherData = session.get(WeatherData.class, id);
+
+        if (foundWeatherData != null) {
+            session.remove(foundWeatherData);
+        }
     }
 }

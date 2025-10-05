@@ -35,6 +35,7 @@
             <th>TEMPERATURE</th>
             <th>FEELS LIKE</th>
             <th>ICON</th>
+            <th>Delete</th>
         </tr>
         <tr th:each="userWeather : ${userWeatherData}">
             <td th:text="${userWeather.getLocation().getName()}">Test1</td>
@@ -42,6 +43,13 @@
             <td th:text="${userWeather.getWeatherData().getFeelsLike()}">2.411</td>
             <td>
                 <img th:src="'http://openweathermap.org/img/wn/' + ${userWeather.getWeatherData().getIconId()} + '.png'" alt="Example Image">
+            </td>
+            <td>
+                <form th:action="@{/weather/delete}" method="post">
+                    <input type="hidden" name="weatherDataId" th:value="${userWeather.getWeatherData().getId()}" />
+                    <input type="hidden" name="locationId" th:value="${userWeather.getLocation().getId()}" />
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
     </table>

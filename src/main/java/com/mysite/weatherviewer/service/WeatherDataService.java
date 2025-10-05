@@ -10,6 +10,7 @@ import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +51,10 @@ public class WeatherDataService {
         Instant now = Instant.now();
 
         return updatedAt.plus(Duration.ofMinutes(weatherCacheDurationMinutes)).isBefore(now);
+    }
+
+    @Transactional
+    public void remove(Long id) {
+        weatherDataRepository.remove(id);
     }
 }

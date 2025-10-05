@@ -2,6 +2,7 @@ package com.mysite.weatherviewer.repository;
 
 import com.mysite.weatherviewer.model.Location;
 import com.mysite.weatherviewer.repository.base.BaseRepository;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -36,5 +37,14 @@ public class LocationRepository extends BaseRepository {
     public Location save(Location location) {
         getCurrentSession().persist(location);
         return location;
+    }
+
+    public void remove(Long id) {
+        Session session = getCurrentSession();
+        Location foundLocation = session.get(Location.class, id);
+
+        if (foundLocation != null) {
+            session.remove(foundLocation);
+        }
     }
 }
