@@ -5,6 +5,7 @@ import com.mysite.weatherviewer.dto.SessionDto;
 import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.dto.UserWeatherDto;
 import com.mysite.weatherviewer.service.SearchWeatherService;
+import com.mysite.weatherviewer.service.UserService;
 import com.mysite.weatherviewer.service.UserWeatherService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -25,14 +26,17 @@ public class WeatherController {
 
     private final SearchWeatherService searchWeatherService;
     private final UserWeatherService userWeatherService;
+    private final UserService userService;
 
     @GetMapping("/welcome")
     public String welcome(@ModelAttribute("user") UserDto user,
                           HttpServletRequest request,
                           Model model) {
         SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
+        UserDto foundUser = userService.findById(foundSession.getUserId());
         List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
 
+        model.addAttribute(RequestAttributeKeys.USER, foundUser);
         model.addAttribute(RequestAttributeKeys.USER_WEATHER_DATA, userWeatherData);
 
         return "weather/welcome";

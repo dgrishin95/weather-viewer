@@ -33,4 +33,11 @@ public class UserRepository extends BaseRepository {
         getCurrentSession().persist(user);
         return user;
     }
+
+    public User findById(Long id) {
+        return getCurrentSession()
+                .createQuery("FROM User WHERE id = :id", User.class)
+                .setParameter("id", id)
+                .uniqueResult();
+    }
 }

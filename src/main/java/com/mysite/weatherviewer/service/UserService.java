@@ -50,4 +50,11 @@ public class UserService {
 
         return userMapper.toUserDto(foundUser);
     }
+
+    @Transactional(readOnly = true)
+    public UserDto findById(Long id) {
+        User foundUser = userRepository.findById(id);
+
+        return userMapper.toUserDto(foundUser);
+    }
 }
