@@ -7,6 +7,7 @@ import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.exception.InvalidCredentialsException;
 import com.mysite.weatherviewer.exception.InvalidUserDataException;
 import com.mysite.weatherviewer.exception.UserAlreadyExistsException;
+import com.mysite.weatherviewer.mapper.UserMapper;
 import com.mysite.weatherviewer.service.CookieService;
 import com.mysite.weatherviewer.service.SessionService;
 import com.mysite.weatherviewer.service.UserService;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
     private final SessionService sessionService;
     private final CookieService cookieService;
 
@@ -44,7 +46,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public String handleLogin(@ModelAttribute LoginDto user,
-                              Model model,
                               RedirectAttributes redirectAttributes,
                               HttpServletResponse response) {
         try {
@@ -52,7 +53,7 @@ public class AuthController {
             SessionDto newUserSession = sessionService.create(foundUser);
             cookieService.addSessionCookie(response, newUserSession);
 
-            model.addAttribute("user", user);
+            redirectAttributes.addFlashAttribute("user", userMapper.toUserDto(user));
             return "redirect:/weather/welcome";
         } catch (InvalidCredentialsException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
@@ -84,7 +85,7 @@ public class AuthController {
             SessionDto newUserSession = sessionService.create(newUser);
             cookieService.addSessionCookie(response, newUserSession);
 
-            model.addAttribute("user", user);
+            redirectAttributes.addFlashAttribute("user", newUser);
             return "redirect:/weather/welcome";
         } catch (UserAlreadyExistsException | InvalidUserDataException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());

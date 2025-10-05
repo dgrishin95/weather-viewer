@@ -2,6 +2,7 @@ package com.mysite.weatherviewer.controller;
 
 import com.mysite.weatherviewer.common.RequestAttributeKeys;
 import com.mysite.weatherviewer.dto.SessionDto;
+import com.mysite.weatherviewer.dto.UserDto;
 import com.mysite.weatherviewer.dto.UserWeatherDto;
 import com.mysite.weatherviewer.service.SearchWeatherService;
 import com.mysite.weatherviewer.service.UserWeatherService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +27,9 @@ public class WeatherController {
     private final UserWeatherService userWeatherService;
 
     @GetMapping("/welcome")
-    public String welcome(HttpServletRequest request, Model model) {
+    public String welcome(@ModelAttribute("user") UserDto user,
+                          HttpServletRequest request,
+                          Model model) {
         SessionDto foundSession = (SessionDto) request.getAttribute(RequestAttributeKeys.USER_SESSION);
         List<UserWeatherDto> userWeatherData = userWeatherService.getUserWeatherData(foundSession.getUserId());
 
