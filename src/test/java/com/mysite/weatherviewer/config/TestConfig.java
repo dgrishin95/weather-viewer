@@ -52,9 +52,6 @@ public class TestConfig {
     @Value("${hibernate.show-sql}")
     private String hibernateShowSql;
 
-    @Value("${hibernate.format-sql}")
-    private String hibernateFormatSql;
-
     @Value("${hibernate.hbm2ddl-auto}")
     private String hibernateHbm2ddlAuto;
 
@@ -121,7 +118,6 @@ public class TestConfig {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", hibernateDialect);
         properties.put("hibernate.show_sql", hibernateShowSql);
-        properties.put("hibernate.format_sql", hibernateFormatSql);
         properties.put("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
         properties.put("hibernate.jdbc.lob.non_contextual_creation", hibernateLobNonContextualCreation);
         properties.put("hibernate.temp.use_jdbc_metadata_defaults", hibernateTempUseJdbcMetadataDefaults);
