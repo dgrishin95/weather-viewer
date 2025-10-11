@@ -96,7 +96,7 @@ public class TestConfig {
     }
 
     @Bean
-    @DependsOn("liquibase")  // Указываем зависимость
+    @DependsOn("liquibase")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
